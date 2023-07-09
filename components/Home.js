@@ -1,125 +1,91 @@
 /* eslint-disable react/no-unescaped-entities */
-import Image from 'next/image'
-import React from 'react'
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router'
+import RoomItem from '../components/room/RoomItem';
+import { toast } from 'react-toastify';
+import { clearErrors } from '../redux/actions/roomActions'
+import Pagination from 'react-js-pagination';
+import Link from 'next/link';
 
 const Home = () => {
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const { rooms, resPerPage, roomsCount, filteredRoomsCount, error } = useSelector(state => state.allRooms);
+
+    let { location, page = 1 } = router.query;
+    page = Number(page)
+
+
+    const handlePagination = (pageNumber) => {
+
+        if (location) {
+            let url = window.location.search
+
+            url.includes('&page') ?
+                url = url.replace(/(page=)[^\&]+/, '$1' + pageNumber)
+                :
+                url = url.concat(`&page=${pageNumber}`)
+
+            router.push(url)
+
+        } else {
+
+            router.push(`/?page=${pageNumber}`)
+            // window.location.href = `/?page=${pageNumber}`
+        }
+
+    }
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error, {
+                position: toast.POSITION.TOP_RIGHT
+            });
+            dispatch(clearErrors());
+        }
+    }, [error])
+
+    let count = roomsCount;
+    if (location) {
+        count = filteredRoomsCount
+    }
+
+
     return (
-        <section id="rooms" className="container mt-5">
-
-            <h2 className='mb-3 ml-2 stays-heading'>Stays in New York</h2>
-
-            <a href='#' className='ml-2 back-to-search'> <i className='fa fa-arrow-left'></i> Back to Search</a>
-            <div className="row">
-                <div className="col-sm-12 col-md-6 col-lg-3 my-3">
-                    <div className="card p-2">
-                        <img
-                            className="card-img-top mx-auto" alt=""
-                            src="https://a0.muscache.com/im/pictures/a8f6a489-d236-4d2d-a57b-a95d928970af.jpg?im_w=960"
-                        />
-                        <div className="card-body d-flex flex-column">
-                            <h5 className="card-title">
-                                <a href="">Charming Studio  10 Miles to Wells' Beaches!</a>
-                            </h5>
-
-                            <div className="ratings mt-auto mb-3">
-                                <p className="card-text"><b>$12</b> / night</p>
-
-                                <div className="rating-outer">
-                                    <div className="rating-inner"></div>
-                                </div>
-                                <span id="no_of_reviews">(5 Reviews)</span>
-                            </div>
-
-                            <button className="btn btn-block view-btn">
-                                <a href='#'>View Details</a>
-                            </button>
-                        </div>
-                    </div>
+        <>
+            <section id="rooms" className="container mt-5">
+                <h2 className='mb-3 ml-2 stays-heading'>{location ? `Rooms in ${location}` : "All Rooms"}</h2>
+                <Link href='/search' legacyBehavior >
+                    <a className='ml-2 back-to-search'>
+                        <i className='fa fa-arrow-left'></i> Back to Search
+                    </a>
+                </Link>
+                <div className="row">
+                    {
+                        rooms && rooms.length > 0 ?
+                            rooms.map(room => <RoomItem key={room._id} room={room} />) :
+                            <div className="alert alert-danger mt-5 w-100"><b>No Rooms Found.</b></div>
+                    }
                 </div>
-
-                <div className="col-sm-12 col-md-6 col-lg-3 my-3">
-                    <div className="card p-2">
-                        <img
-                            className="card-img-top mx-auto"
-                            src="https://a0.muscache.com/im/pictures/2121b1e3-1d2b-4824-9268-eba1e593bc28.jpg?im_w=720"
-                        />
-                        <div className="card-body d-flex flex-column">
-                            <h5 className="card-title">
-                                <a href="">Picturesque 2-Story Farmhouse w/Private Hot Tub</a>
-                            </h5>
-
-                            <div className="ratings mt-auto mb-3">
-                                <p className="card-text"><b>$12</b> / night</p>
-
-                                <div className="rating-outer">
-                                    <div className="rating-inner"></div>
-                                </div>
-                                <span id="no_of_reviews">(5 Reviews)</span>
-                            </div>
-
-                            <button className="btn btn-block view-btn">
-                                <a href='#'>View Details</a>
-                            </button>
-                        </div>
-                    </div>
+            </section >
+            {resPerPage < count &&
+                <div className="d-flex justify-content-center mt-5">
+                    <Pagination
+                        activePage={page}
+                        itemsCountPerPage={resPerPage}
+                        totalItemsCount={roomsCount}
+                        onChange={handlePagination}
+                        nextPageText={'Next'}
+                        prevPageText={'Prev'}
+                        firstPageText={'First'}
+                        lastPageText={'Last'}
+                        itemClass='page-item'
+                        linkClass='page-link'
+                    />
                 </div>
-
-                <div className="col-sm-12 col-md-6 col-lg-3 my-3">
-                    <div className="card p-2">
-                        <img
-                            className="card-img-top mx-auto"
-                            src="https://a0.muscache.com/im/pictures/4599de32-549f-4125-8c93-ef99ce5b4cb0.jpg?im_w=720"
-                        />
-                        <div className="card-body d-flex flex-column">
-                            <h5 className="card-title">
-                                <a href="">Downtown Portsmouth Private Getaway! Hot Tub</a>
-                            </h5>
-
-                            <div className="ratings mt-auto mb-3">
-                                <p className="card-text"><b>$12</b> / night</p>
-
-                                <div className="rating-outer">
-                                    <div className="rating-inner"></div>
-                                </div>
-                                <span id="no_of_reviews">(5 Reviews)</span>
-                            </div>
-
-                            <button className="btn btn-block view-btn">
-                                <a href='#'>View Details</a>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div className="col-sm-12 col-md-6 col-lg-3 my-3">
-                    <div className="card p-2">
-                        <img
-                            className="card-img-top mx-auto"
-                            src="https://a0.muscache.com/im/pictures/70d71940-9610-46b8-b028-cc190bbfe6e9.jpg?im_w=960"
-                        />
-                        <div className="card-body d-flex flex-column">
-                            <h5 className="card-title">
-                                <a href="">Spacious Suite in a quiet Boston neighborhood.</a>
-                            </h5>
-
-                            <div className="ratings mt-auto mb-3">
-                                <p className="card-text"><b>$12</b> / night</p>
-
-                                <div className="rating-outer">
-                                    <div className="rating-inner"></div>
-                                </div>
-                                <span id="no_of_reviews">(5 Reviews)</span>
-                            </div>
-
-                            <button className="btn btn-block view-btn">
-                                <a href='#'>View Details</a>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section >
+            }
+        </>
 
     )
 }

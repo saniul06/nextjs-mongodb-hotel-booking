@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const Room = require('../models/room');
+const Room = require('../models/room').default;
 const rooms = require('../data/rooms');
 
 mongoose.connect('mongodb://localhost:27017/bookit', {

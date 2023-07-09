@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import RoomModel from '../models/room';
 
 const dbConnect = () => {
     if (mongoose.connection.readyState >= 1) {
@@ -10,7 +11,10 @@ const dbConnect = () => {
         useUnifiedTopology: true,
         autoIndex: true
     })
-        .then(con => console.log('Connected to local database. '))
+        .then(con => {
+            console.log('Connected to local database. ');
+            RoomModel();
+        })
         .catch(err => console.log('Database connection error. ', err));
 }
 
