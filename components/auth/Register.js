@@ -75,10 +75,6 @@ const Register = () => {
 
     }, [dispatch, success, error])
 
-    useEffect(() => {
-        console.log('avator is: ', avatar)
-    }, [avatar])
-
     const onChange = (e) => {
 
         if (e.target.name === 'avatar') {

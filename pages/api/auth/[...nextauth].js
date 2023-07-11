@@ -39,18 +39,11 @@ export default NextAuth({
     ],
     callbacks: {
         jwt: async ({ token, user }) => {
-            console.log('in jwt: ')
-            console.log('token is: ', token)
-            console.log('user is: ', token)
-
             user && (token.user = user)
             return Promise.resolve(token)
         },
-        session: async ({ session, user }) => {
-            console.log('in session: ')
-            console.log('session is: ', session)
-            console.log('user is: ', user)
-            session.user = user.user
+        session: async ({ session, user, token }) => {
+            session.user = token.user
             return Promise.resolve(session)
         }
     }
