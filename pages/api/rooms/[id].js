@@ -3,8 +3,6 @@ import { getSingleRoom, updateRoom, deleteRoom } from "../../../controllers/room
 import createRouter from "next-connect";
 import onError from '../../../middlewares/errors'
 
-dbConnect();
-
 const router = createRouter({ onError })
     .get(getSingleRoom)
     .put(updateRoom)

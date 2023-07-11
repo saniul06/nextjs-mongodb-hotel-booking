@@ -1,8 +1,7 @@
 import ErrorHandler from "@/utils/errorHandler";
-import RoomModel from "../models/room";
+import Room from "../models/room";
 import catchAsyncErrors from '../middlewares/catchAsyncErrors';
 import ApiFeatures from '../utils/apiFeatures';
-const Room = RoomModel();
 
 const allRooms = catchAsyncErrors(async (req, res) => {
     const resPerPage = 4;

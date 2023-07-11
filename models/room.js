@@ -114,12 +114,4 @@ const roomSchema = new Schema({
 
 })
 
-console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
-
-
-
-// Export the Room model
-export default function RoomModel() {
-    const Room = models.Room || model('Room', roomSchema);
-    return Room
-}
+export default models.Room || model('Room', roomSchema);
